@@ -140,8 +140,8 @@ graph LR
     end
     
     subgraph "Flask Application"
-        Flask[🐍 os.getenv()]
-        Display[📺 Display Values]
+        Flask["🐍 os.getenv()"]
+        Display["📺 Display Values"]
     end
     
     O1 --> API
