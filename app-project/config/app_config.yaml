@@ -1,0 +1,4 @@
+environment: "dev"
+app:
+  port: 5000
+  debug: true

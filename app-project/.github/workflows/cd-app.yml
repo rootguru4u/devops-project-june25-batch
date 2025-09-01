@@ -1,0 +1,26 @@
+name: App CD
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Fetch TFC outputs
+      - name: Get Infra Outputs
+        id: outputs
+        run: |
+          curl \
+            --header "Authorization: Bearer $TFC_TOKEN" \
+            https://app.terraform.io/api/v2/workspaces/infra-workspace/outputs \
+            > infra_outputs.json
+          export ALB_DNS=$(jq -r '.data[] | select(.type=="string" and .name=="alb_dns") | .value' infra_outputs.json)
+          export RDS_ENDPOINT=$(jq -r '.data[] | select(.type=="string" and .name=="rds_endpoint") | .value' infra_outputs.json)
+          export REDIS_ENDPOINT=$(jq -r '.data[] | select(.type=="string" and .name=="redis_endpoint") | .value' infra_outputs.json)
+          export S3_BUCKET=$(jq -r '.data[] | select(.type=="string" and .name=="s3_bucket") | .value' infra_outputs.json)
+      # Build Docker
+      - run: docker build -t my-app:latest ./app-code
+      # Deploy container (stub example, replace with ECS/EKS deploy commands)
+      - run: echo "Deploying container to EKS/EC2 using infra outputs..."

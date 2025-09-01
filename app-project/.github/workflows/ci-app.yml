@@ -1,0 +1,14 @@
+name: App CI
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install -r app-code/requirements.txt
+      - run: python -m py_compile app-code/src/main.py
+      - run: docker build -t my-app:ci ./app-code

@@ -1,0 +1,12 @@
+name: Infra CI
+on: [pull_request]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - run: terraform fmt -check
+      - run: terraform validate
+      - run: terraform plan
